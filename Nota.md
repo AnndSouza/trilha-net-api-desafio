@@ -1,21 +1,21 @@
-using Microsoft.AspNetCore.Mvc;
-using TrilhaApiDesafio.Context;
-using TrilhaApiDesafio.Models;
+- O que foi feito nesse desafio
 
-namespace TrilhaApiDesafio.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
-    public class TarefaController : ControllerBase
-    {
-        private readonly OrganizadorContext _context;
+## Projeto Tarefas
+- package api entity framework já incluso
 
-        public TarefaController(OrganizadorContext context)
-        {
-            _context = context;
-        }
+- Conexão Padrão - (link com o banco - homologação)
 
-        [HttpGet("{id}")]
+
+- Migration 
+    - server ok
+    - $dotnet-ef migrations add CriacaoTabelaTarefa 
+    Aplicando a migration
+        - $dotnet-ef database update
+
+### Representação - (TarefaController)
+
+## ObterPorId
+      [HttpGet("{id}")]
         public IActionResult ObterPorId(int id)
         {
             var tarefa = _context.Tarefas.Find(id);
@@ -29,7 +29,8 @@ namespace TrilhaApiDesafio.Controllers
             return Ok(tarefa);
         }
 
-        [HttpGet("ObterTodos")]
+## ObterTodos
+    [HttpGet("ObterTodos")]
         public IActionResult ObterTodos()
         {
 
@@ -38,8 +39,8 @@ namespace TrilhaApiDesafio.Controllers
             // TODO: Buscar todas as tarefas no banco utilizando o EF
             return Ok(tarefas);
         }
-
-        [HttpGet("ObterPorTitulo")]
+## ObterPorTitulo
+     [HttpGet("ObterPorTitulo")]
         public IActionResult ObterPorTitulo(string titulo)
         {
             var tarefas = _context.Tarefas.Where(x => x.Titulo.Contains(titulo));
@@ -49,14 +50,14 @@ namespace TrilhaApiDesafio.Controllers
             return Ok(tarefas);
         }
 
-        [HttpGet("ObterPorData")]
-        public IActionResult ObterPorData(DateTime data)
-        {
-            var tarefa = _context.Tarefas.Where(x => x.Data.Date == data.Date);
-            return Ok(tarefa);
-        }
+## TODO: Adicionar a tarefa recebida no EF e salvar as mudanças (save changes).
 
-        [HttpGet("ObterPorStatus")]
+    public IActionResult Criar(Tarefa tarefa)
+    _context.Add(tarefa);
+    _context.SaveChanges();
+
+## ObterPorStatus
+     [HttpGet("ObterPorStatus")]
         public IActionResult ObterPorStatus(EnumStatusTarefa status)
         {
             
@@ -66,7 +67,8 @@ namespace TrilhaApiDesafio.Controllers
             return Ok(tarefas);
         }
 
-        [HttpPost]
+## Método Criar
+    [HttpPost]
         public IActionResult Criar(Tarefa tarefa)
         {
             if (tarefa.Data == DateTime.MinValue)
@@ -79,7 +81,8 @@ namespace TrilhaApiDesafio.Controllers
             return CreatedAtAction(nameof(ObterPorId), new { id = tarefa.Id }, tarefa);
         }
 
-        [HttpPut("{id}")]
+## Método Atualizar
+    [HttpPut("{id}")]
         public IActionResult Atualizar(int id, Tarefa tarefa)
         {
             var tarefaBanco = _context.Tarefas.Find(id);
@@ -98,12 +101,8 @@ namespace TrilhaApiDesafio.Controllers
             _context.Tarefas.Update(tarefaBanco);
             _context.SaveChanges();
 
-            // TODO: Atualizar as informações da variável tarefaBanco com a tarefa recebida via parâmetro
-            // TODO: Atualizar a variável tarefaBanco no EF e salvar as mudanças (save changes)
-            return Ok(tarefaBanco);
-        }
-
-        [HttpDelete("{id}")]
+## Método Deletar
+    [HttpDelete("{id}")]
         public IActionResult Deletar(int id)
         {
             var tarefaBanco = _context.Tarefas.Find(id);
@@ -116,5 +115,3 @@ namespace TrilhaApiDesafio.Controllers
             // TODO: Remover a tarefa encontrada através do EF e salvar as mudanças (save changes)
             return NoContent();
         }
-    }
-}
